@@ -30,11 +30,11 @@ export default function LiveChart() {
   }));
 
   return (
-    <Card className="shadow-aqua border-primary/20 bg-card/80 backdrop-blur-sm">
+    <Card className="shadow-aqua border-primary/20 bg-card/80 backdrop-blur-sm h-full">
       <CardHeader>
         <CardTitle className="text-primary">Live Sensor Data</CardTitle>
       </CardHeader>
-      <CardContent className="h-[350px] w-full">
+      <CardContent className="h-[350px] lg:h-[calc(100%-80px)] w-full">
         <ResponsiveContainer>
           <LineChart
             data={chartData}

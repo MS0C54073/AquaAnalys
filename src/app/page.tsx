@@ -10,6 +10,7 @@ import DissolvedOxygenCard from '@/components/dashboard/dissolved-oxygen-card';
 import LiveChart from '@/components/dashboard/live-chart';
 import Controls from '@/components/dashboard/controls';
 import SettingsSheet from '@/components/dashboard/settings-sheet';
+import AnalystCard from '@/components/dashboard/analyst-card';
 import { Skeleton } from '@/components/ui/skeleton';
 
 function Dashboard() {
@@ -37,12 +38,21 @@ function Dashboard() {
           </div>
         )}
         
-        <div className="mt-6">
-          {isInitialized ? (
-            <LiveChart />
-          ) : (
-            <Skeleton className="h-[350px] w-full rounded-lg" />
-          )}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+          <div className="lg:col-span-2">
+            {isInitialized ? (
+              <LiveChart />
+            ) : (
+              <Skeleton className="h-[400px] w-full rounded-lg" />
+            )}
+          </div>
+          <div className="lg:col-span-1">
+             {isInitialized ? (
+              <AnalystCard />
+            ) : (
+              <Skeleton className="h-[400px] w-full rounded-lg" />
+            )}
+          </div>
         </div>
       </main>
       
