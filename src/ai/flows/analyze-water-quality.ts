@@ -46,11 +46,15 @@ Analyze the current sensor data based on the provided alert threshold settings.
     *   'Warning': One or more parameters are slightly outside the optimal range but not at a dangerous level.
     *   'Critical': One or more parameters are at a dangerous level requiring immediate attention.
 2.  **Summary:** A very brief, one-sentence overview of the situation.
-3.  **Detailed Analysis:** Provide this as an array of objects. Create at least two sections: one for 'Key Observations' and another for 'Actionable Recommendations'.
-    *   **Key Observations:** List the most important findings from the data. Mention which parameters are normal and which are outside the thresholds. Be specific.
-    *   **Actionable Recommendations:** Based on the observations, provide clear, simple, and actionable steps the user should take. If all is well, state that no action is needed.
+3.  **Detailed Analysis:** Provide this as an array of objects, each with a title and points. You must always include two sections: 'Key Observations' and 'Actionable Recommendations'.
+    *   **Key Observations:** List the most important findings from the data. Mention which parameters are normal and which are outside the thresholds. Be specific. If all parameters are normal, state that clearly.
+    *   **Actionable Recommendations:** Based on the observations, provide clear, simple, and actionable steps the user should take. If all is well, your recommendation should be to continue current monitoring practices.
 
-**Example for a critical state:**
+**Example for a 'Good' state:**
+- **Observation:** "All parameters (Temperature, pH, Turbidity, DO) are within their optimal ranges."
+- **Recommendation:** "No immediate action is needed. Continue with standard monitoring."
+
+**Example for a 'Critical' state:**
 - **Observation:** "Dissolved Oxygen is critically low at 2.5 mg/L."
 - **Recommendation:** "Immediately increase aeration in the tank and check for equipment malfunctions."
 
