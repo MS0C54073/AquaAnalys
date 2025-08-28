@@ -23,7 +23,7 @@ The main interface is a comprehensive dashboard divided into several key section
     -   Copper Concentration
 -   **Live Chart**: A graphical representation of the historical data for all six parameters, updating in real-time.
 -   **AI Analyst Card**: An AI-powered component that provides continuous analysis, status updates, and actionable recommendations based on the live data.
--   **Control Bar**: A set of controls to start or stop the data simulation, export data, and open the settings panel.
+-   **Control Bar**: A set of controls to start or stop the data simulation, export data, access simulation presets, and open the settings panel.
 
 ### 2.2. Data Simulation
 The system uses a client-side data simulation engine to mimic a live sensor feed.
@@ -70,6 +70,16 @@ Users can customize the application's behavior via the Settings panel.
 -   **Refresh Interval**: Adjust the frequency at which new data is generated.
 -   **Persistence**: All settings are automatically saved to the browser's `localStorage` and are reloaded on subsequent visits.
 
+### 2.6. Simulation Presets
+For experimental and demonstration purposes, users can instantly set the water quality to a specific state.
+
+-   **Location**: Accessible via the "Simulate" button in the main control bar.
+-   **Presets**:
+    -   **Clean Environment**: Sets all parameters to ideal, healthy values.
+    -   **Fair Environment**: Sets parameters to values that are borderline or slightly outside of optimal ranges, likely to trigger "Warning" states.
+    -   **Dirty Environment**: Sets parameters to poor or critical values, likely to trigger "Critical" alerts.
+-   **Functionality**: Selecting a preset injects a new data point with the corresponding values into the data history, and the simulation continues from that state.
+
 ## 3. Operational Algorithm
 
 The system operates based on the following sequence of events:
@@ -104,5 +114,9 @@ The system operates based on the following sequence of events:
     d. **Refresh Analysis Button (on Analyst Card)**:
         i. Manually triggers the `analyzeWaterQuality` AI flow with the most recent data.
         ii. The card updates its display with the returned analysis.
+    e. **Simulate Button**:
+        i. Opens a dropdown menu with 'Clean', 'Fair', and 'Dirty' presets.
+        ii. Selecting a preset immediately injects a new data point with predefined values into the system.
+        iii. The simulation and all dashboard components update instantly to reflect this new state.
 
 This comprehensive workflow ensures a responsive, interactive, and insightful experience for monitoring water quality data.
