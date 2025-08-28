@@ -71,6 +71,9 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      boxShadow: {
+        'aqua': '0 4px 12px rgba(0, 255, 255, 0.2)',
+      },
       keyframes: {
         'accordion-down': {
           from: {
