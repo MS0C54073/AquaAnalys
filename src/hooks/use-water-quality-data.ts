@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { DataPoint, Settings } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
@@ -127,7 +127,7 @@ export function useWaterQualityData() {
 
   const updateSettings = (newSettings: Partial<Settings>) => {
     setSettings(prev => {
-      const updated = { ...prev, ...newSettings };
+      const updated = { ...prev, ...newSettings, alerts: { ...prev.alerts, ...newSettings.alerts } };
       try {
         localStorage.setItem('aquaview_settings', JSON.stringify(updated));
       } catch (error) {
