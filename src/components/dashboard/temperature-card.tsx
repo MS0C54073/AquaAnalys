@@ -1,6 +1,6 @@
 "use client";
 
-import { Thermometer, TrendUp, TrendDown, Minus } from 'lucide-react';
+import { Thermometer, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import DataCard from './data-card';
 import { useData } from '@/contexts/data-provider';
 import { ResponsiveContainer, AreaChart, Area } from 'recharts';
@@ -15,11 +15,14 @@ export default function TemperatureCard() {
 
   const trendData = dataHistory.slice(-2);
   let TrendIcon = Minus;
+  let trendColor = 'text-foreground/60';
   if (trendData.length > 1) {
     if (trendData[1].temp > trendData[0].temp) {
-      TrendIcon = TrendUp;
+      TrendIcon = TrendingUp;
+      trendColor = 'text-green-400';
     } else if (trendData[1].temp < trendData[0].temp) {
-      TrendIcon = TrendDown;
+      TrendIcon = TrendingDown;
+      trendColor = 'text-red-400';
     }
   }
 
@@ -33,7 +36,7 @@ export default function TemperatureCard() {
             {tempValue}
             <span className="text-2xl text-foreground/60 ml-1">{unit}</span>
           </div>
-          <div className={`flex items-center gap-1 ${TrendIcon === TrendUp ? 'text-green-400' : TrendIcon === TrendDown ? 'text-red-400' : 'text-foreground/60'}`}>
+          <div className={`flex items-center gap-1 ${trendColor}`}>
             <TrendIcon size={20} />
           </div>
         </div>
@@ -42,8 +45,8 @@ export default function TemperatureCard() {
             <AreaChart data={sparklineData} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorTemp" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.4}/>
-                  <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4}/>
+                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
                 </linearGradient>
               </defs>
               <Area type="monotone" dataKey="temp" stroke="hsl(var(--primary))" strokeWidth={2} fill="url(#colorTemp)" />
