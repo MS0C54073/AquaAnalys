@@ -53,10 +53,10 @@ export default function LiveChart() {
             <Legend wrapperStyle={{ color: 'hsl(var(--foreground))' }} />
             <Line yAxisId="left" type="monotone" dataKey="temp" name="Temp (°C)" stroke="hsl(var(--chart-1))" dot={false} strokeWidth={2} />
             <Line yAxisId="left" type="monotone" dataKey="ph" name="pH" stroke="hsl(var(--chart-2))" dot={false} strokeWidth={2} />
-            <Line yAxisId="right" type="monotone" dataKey="turbidity" name="Turbidity (NTU)" stroke="hsl(var(--chart-3))" dot={false} strokeWidth={2} />
+            <Line yAxisId="left" type="monotone" dataKey="turbidity" name="Turbidity (NTU)" stroke="hsl(var(--chart-3))" dot={false} strokeWidth={2} />
             <Line yAxisId="left" type="monotone" dataKey="do" name="DO (mg/L)" stroke="hsl(var(--chart-4))" dot={false} strokeWidth={2} />
             <Line yAxisId="right" type="monotone" dataKey="lead" name="Lead (mg/L)" stroke="hsl(var(--chart-5))" dot={false} strokeWidth={2} />
-            <Line yAxisId="right" type="monotone" dataKey="copper" name="Copper (mg/L)" stroke="hsl(var(--chart-1))" strokeDasharray="3 3" dot={false} strokeWidth={2} />
+            <Line yAxisId="right" type="monotone" dataKey="copper" name="Copper (mg/L)" stroke="hsl(var(--primary))" strokeDasharray="5 5" dot={false} strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
       </CardContent>

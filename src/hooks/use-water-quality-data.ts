@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type { DataPoint, Settings } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
@@ -23,31 +23,33 @@ const initialSettings: Settings = {
 function generateNewDataPoint(lastData: DataPoint): DataPoint {
   const newPoint: DataPoint = {
     time: Date.now(),
-    temp: parseFloat((lastData.temp + (Math.random() - 0.5) * 0.5).toFixed(1)),
-    ph: parseFloat((lastData.ph + (Math.random() - 0.5) * 0.1).toFixed(1)),
-    turbidity: Math.max(0, parseFloat((lastData.turbidity + (Math.random() - 0.5) * 5).toFixed(0))),
-    do: Math.max(0, parseFloat((lastData.do + (Math.random() - 0.5) * 0.2).toFixed(1))),
-    lead: Math.max(0, parseFloat((lastData.lead + (Math.random() - 0.5) * 0.002).toFixed(4))),
-    copper: Math.max(0, parseFloat((lastData.copper + (Math.random() - 0.5) * 0.05).toFixed(3))),
+    temp: lastData.temp + (Math.random() - 0.5) * 0.5,
+    ph: lastData.ph + (Math.random() - 0.5) * 0.1,
+    turbidity: lastData.turbidity + (Math.random() - 0.5) * 5,
+    do: lastData.do + (Math.random() - 0.5) * 0.2,
+    lead: lastData.lead + (Math.random() - 0.49) * 0.002, // Tend to slightly increase
+    copper: lastData.copper + (Math.random() - 0.49) * 0.05, // Tend to slightly increase
   };
 
-  // Clamp values to realistic ranges
-  newPoint.temp = Math.max(5, Math.min(45, newPoint.temp));
-  newPoint.ph = Math.max(4, Math.min(10, newPoint.ph));
-  newPoint.turbidity = Math.max(0, Math.min(200, newPoint.turbidity));
-  newPoint.do = Math.max(0, Math.min(15, newPoint.do));
-  newPoint.lead = Math.max(0, Math.min(0.1, newPoint.lead));
-  newPoint.copper = Math.max(0, Math.min(2.5, newPoint.copper));
+  // Clamp values to realistic ranges and format them
+  newPoint.temp = parseFloat(Math.max(5, Math.min(45, newPoint.temp)).toFixed(1));
+  newPoint.ph = parseFloat(Math.max(4, Math.min(10, newPoint.ph)).toFixed(1));
+  newPoint.turbidity = parseFloat(Math.max(0, Math.min(200, newPoint.turbidity)).toFixed(0));
+  newPoint.do = parseFloat(Math.max(0, Math.min(15, newPoint.do)).toFixed(1));
+  newPoint.lead = parseFloat(Math.max(0, Math.min(0.1, newPoint.lead)).toFixed(4));
+  newPoint.copper = parseFloat(Math.max(0, Math.min(2.5, newPoint.copper)).toFixed(3));
 
 
   return newPoint;
 }
 
 const getInitialData = (): DataPoint[] => {
-    const initialPoint: DataPoint = { time: Date.now(), temp: 25.3, ph: 7.2, turbidity: 12, do: 8.1, lead: 0.003, copper: 0.2 };
-    const history = [initialPoint];
+    let lastPoint: DataPoint = { time: Date.now() - (MAX_HISTORY_LENGTH * 3000), temp: 25, ph: 7.5, turbidity: 10, do: 8, lead: 0.001, copper: 0.1 };
+    const history = [lastPoint];
     for (let i = 0; i < MAX_HISTORY_LENGTH -1; i++) {
-        history.unshift(generateNewDataPoint(history[0]));
+        lastPoint = generateNewDataPoint(history[i]);
+        lastPoint.time = Date.now() - ((MAX_HISTORY_LENGTH - i - 1) * 3000);
+        history.push(lastPoint);
     }
     return history;
 }
@@ -99,11 +101,8 @@ export function useWaterQualityData() {
     };
   }, [isRunning, settings.refreshInterval, isInitialized]);
 
-  // Moved alert logic to its own useEffect to avoid setState-in-render errors
-  useEffect(() => {
-    if (!currentData || !isInitialized) return;
-
-    const dataPoint = currentData;
+  const checkAlerts = useCallback((dataPoint: DataPoint) => {
+    if (!dataPoint) return;
     if (dataPoint.ph < settings.alerts.ph.min || dataPoint.ph > settings.alerts.ph.max) {
       toast({ variant: 'destructive', title: 'pH Alert', description: `pH level is ${dataPoint.ph}, outside the normal range.` });
     }
@@ -122,7 +121,13 @@ export function useWaterQualityData() {
     if (dataPoint.copper > settings.alerts.copper.max) {
         toast({ variant: 'destructive', title: 'Copper Alert', description: `Copper concentration is ${dataPoint.copper} mg/L, exceeding the safe limit.` });
     }
-  }, [currentData, settings.alerts, toast, isInitialized]);
+  }, [settings.alerts, toast]);
+
+  useEffect(() => {
+    if (currentData && isInitialized) {
+      checkAlerts(currentData);
+    }
+  }, [currentData, isInitialized, checkAlerts]);
 
 
   const updateSettings = (newSettings: Partial<Settings>) => {
