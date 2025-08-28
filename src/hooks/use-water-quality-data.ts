@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -58,6 +59,8 @@ export function useWaterQualityData() {
   const [isRunning, setRunning] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
+  
+  const currentData = dataHistory[dataHistory.length - 1];
 
   useEffect(() => {
     try {
@@ -72,34 +75,12 @@ export function useWaterQualityData() {
     setInitialized(true);
   }, []);
 
-  const checkAlerts = useCallback((dataPoint: DataPoint) => {
-    if (dataPoint.ph < settings.alerts.ph.min || dataPoint.ph > settings.alerts.ph.max) {
-      toast({ variant: 'destructive', title: 'pH Alert', description: `pH level is ${dataPoint.ph}, outside the normal range.` });
-    }
-    if (dataPoint.turbidity > settings.alerts.turbidity.max) {
-      toast({ variant: 'destructive', title: 'Turbidity Alert', description: `Turbidity is ${data.turbidity} NTU, which is too high.` });
-    }
-     if (dataPoint.temp < settings.alerts.temp.min || dataPoint.temp > settings.alerts.temp.max) {
-      toast({ variant: 'destructive', title: 'Temperature Alert', description: `Temperature is ${dataPoint.temp}°C, outside the safe range.` });
-    }
-     if (dataPoint.do < settings.alerts.do.min) {
-      toast({ variant: 'destructive', title: 'Oxygen Alert', description: `Dissolved Oxygen is ${dataPoint.do} mg/L, which is too low.` });
-    }
-    if (dataPoint.lead > settings.alerts.lead.max) {
-        toast({ variant: 'destructive', title: 'Lead Alert', description: `Lead concentration is ${dataPoint.lead} mg/L, exceeding the safe limit.` });
-    }
-    if (dataPoint.copper > settings.alerts.copper.max) {
-        toast({ variant: 'destructive', title: 'Copper Alert', description: `Copper concentration is ${dataPoint.copper} mg/L, exceeding the safe limit.` });
-    }
-  }, [settings.alerts, toast]);
-
   useEffect(() => {
     if (isRunning && isInitialized) {
       intervalRef.current = setInterval(() => {
         setDataHistory(prevHistory => {
           const lastData = prevHistory[prevHistory.length - 1] ?? getInitialData()[0];
           const newData = generateNewDataPoint(lastData);
-          checkAlerts(newData);
           const newHistory = [...prevHistory, newData];
           if (newHistory.length > MAX_HISTORY_LENGTH) {
             return newHistory.slice(newHistory.length - MAX_HISTORY_LENGTH);
@@ -116,7 +97,33 @@ export function useWaterQualityData() {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, settings.refreshInterval, isInitialized, checkAlerts]);
+  }, [isRunning, settings.refreshInterval, isInitialized]);
+
+  // Moved alert logic to its own useEffect to avoid setState-in-render errors
+  useEffect(() => {
+    if (!currentData || !isInitialized) return;
+
+    const dataPoint = currentData;
+    if (dataPoint.ph < settings.alerts.ph.min || dataPoint.ph > settings.alerts.ph.max) {
+      toast({ variant: 'destructive', title: 'pH Alert', description: `pH level is ${dataPoint.ph}, outside the normal range.` });
+    }
+    if (dataPoint.turbidity > settings.alerts.turbidity.max) {
+      toast({ variant: 'destructive', title: 'Turbidity Alert', description: `Turbidity is ${dataPoint.turbidity} NTU, which is too high.` });
+    }
+     if (dataPoint.temp < settings.alerts.temp.min || dataPoint.temp > settings.alerts.temp.max) {
+      toast({ variant: 'destructive', title: 'Temperature Alert', description: `Temperature is ${dataPoint.temp}°C, outside the safe range.` });
+    }
+     if (dataPoint.do < settings.alerts.do.min) {
+      toast({ variant: 'destructive', title: 'Oxygen Alert', description: `Dissolved Oxygen is ${dataPoint.do} mg/L, which is too low.` });
+    }
+    if (dataPoint.lead > settings.alerts.lead.max) {
+        toast({ variant: 'destructive', title: 'Lead Alert', description: `Lead concentration is ${dataPoint.lead} mg/L, exceeding the safe limit.` });
+    }
+    if (dataPoint.copper > settings.alerts.copper.max) {
+        toast({ variant: 'destructive', title: 'Copper Alert', description: `Copper concentration is ${dataPoint.copper} mg/L, exceeding the safe limit.` });
+    }
+  }, [currentData, settings.alerts, toast, isInitialized]);
+
 
   const updateSettings = (newSettings: Partial<Settings>) => {
     setSettings(prev => {
@@ -132,8 +139,6 @@ export function useWaterQualityData() {
 
   const toggleMonitoring = () => setRunning(prev => !prev);
   
-  const currentData = dataHistory[dataHistory.length - 1];
-
   return {
     isInitialized,
     settings,
