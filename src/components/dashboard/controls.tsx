@@ -2,7 +2,7 @@
 
 import { useData } from '@/contexts/data-provider';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, FileDown, Settings, Bot } from 'lucide-react';
+import { Play, Pause, FileDown, Settings, Bot, Beaker } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,7 +30,7 @@ type ControlsProps = {
 };
 
 export default function Controls({ onSettingsClick }: ControlsProps) {
-  const { isRunning, toggleMonitoring, dataHistory, settings } = useData();
+  const { isRunning, toggleMonitoring, dataHistory, settings, setSimulationPreset } = useData();
   const { toast } = useToast();
   const [isReportDialogOpen, setReportDialogOpen] = React.useState(false);
   const [reportContent, setReportContent] = React.useState("");
@@ -87,6 +87,14 @@ export default function Controls({ onSettingsClick }: ControlsProps) {
     });
   }
 
+  const handleSimulationPreset = (preset: 'clean' | 'fair' | 'dirty') => {
+    setSimulationPreset(preset);
+    toast({
+      title: `Simulation Set to ${preset.charAt(0).toUpperCase() + preset.slice(1)}`,
+      description: `Water quality parameters have been adjusted.`,
+    });
+  };
+
   return (
     <>
       <footer className="flex items-center justify-center gap-4 mt-6">
@@ -114,6 +122,25 @@ export default function Controls({ onSettingsClick }: ControlsProps) {
              <DropdownMenuItem onClick={handleGenerateReport}>
               <Bot className="mr-2" />
               Generate AI Report
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="lg" className="active:scale-95 transition-transform">
+              <Beaker className="mr-2" /> Simulate
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => handleSimulationPreset('clean')}>
+              Clean Environment
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleSimulationPreset('fair')}>
+              Fair Environment
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleSimulationPreset('dirty')}>
+              Dirty Environment
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

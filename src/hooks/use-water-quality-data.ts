@@ -127,7 +127,7 @@ export function useWaterQualityData() {
     if (currentData && isInitialized) {
       checkAlerts(currentData);
     }
-  }, [currentData, isInitialized, checkAlerts]);
+  }, [currentData, isInitialized, checkAlerts, settings.alerts]);
 
 
   const updateSettings = (newSettings: Partial<Settings>) => {
@@ -144,6 +144,27 @@ export function useWaterQualityData() {
 
   const toggleMonitoring = () => setRunning(prev => !prev);
   
+  const setSimulationPreset = (preset: 'clean' | 'fair' | 'dirty') => {
+    const presets = {
+      clean: { temp: 24, ph: 7.2, turbidity: 5, do: 9, lead: 0.001, copper: 0.05 },
+      fair: { temp: 28, ph: 6.5, turbidity: 45, do: 5, lead: 0.010, copper: 0.8 },
+      dirty: { temp: 32, ph: 5.8, turbidity: 90, do: 3, lead: 0.05, copper: 1.8 },
+    };
+
+    const newPoint: DataPoint = {
+      ...presets[preset],
+      time: Date.now(),
+    };
+
+    setDataHistory(prevHistory => {
+      const newHistory = [...prevHistory, newPoint];
+      if (newHistory.length > MAX_HISTORY_LENGTH) {
+        return newHistory.slice(newHistory.length - MAX_HISTORY_LENGTH);
+      }
+      return newHistory;
+    });
+  }
+
   return {
     isInitialized,
     settings,
@@ -152,5 +173,6 @@ export function useWaterQualityData() {
     currentData,
     isRunning,
     toggleMonitoring,
+    setSimulationPreset,
   };
 }
