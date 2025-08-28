@@ -10,7 +10,7 @@ The application is built with Next.js and React, utilizing server-side component
 
 ## 2. Core Functionalities
 
-### 2.1. Dashboard Interface
+### 2.1. Dashboard InterfaceQ
 The main interface is a comprehensive dashboard divided into several key sections:
 
 -   **Top Bar**: Displays the application title, mock status icons (WiFi, Battery), and an access point to the settings panel.

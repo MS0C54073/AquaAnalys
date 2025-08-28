@@ -58,7 +58,8 @@ export default function AnalystCard() {
         if (isInitialized && !analysis) { // Only run on initial load
             performAnalysis();
         }
-    }, [isInitialized, analysis, performAnalysis]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isInitialized]);
 
 
     return (
