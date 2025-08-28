@@ -55,10 +55,10 @@ export default function AnalystCard() {
     }, [currentData, settings]);
 
     React.useEffect(() => {
-        if (isInitialized) {
+        if (isInitialized && !analysis) { // Only run on initial load
             performAnalysis();
         }
-    }, [isInitialized, performAnalysis]);
+    }, [isInitialized, analysis, performAnalysis]);
 
 
     return (
