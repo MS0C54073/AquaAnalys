@@ -14,12 +14,14 @@ The application is built with Next.js and React, utilizing server-side component
 The main interface is a comprehensive dashboard divided into several key sections:
 
 -   **Top Bar**: Displays the application title, mock status icons (WiFi, Battery), and an access point to the settings panel.
--   **Data Cards Grid**: A 2x2 grid presenting real-time values for four primary water quality parameters:
+-   **Data Cards Grid**: A grid presenting real-time values for six primary water quality parameters:
     -   Temperature
     -   pH Level
     -   Turbidity
     -   Dissolved Oxygen (DO)
--   **Live Chart**: A graphical representation of the historical data for all four parameters, updating in real-time.
+    -   Lead Concentration
+    -   Copper Concentration
+-   **Live Chart**: A graphical representation of the historical data for all six parameters, updating in real-time.
 -   **AI Analyst Card**: An AI-powered component that provides continuous analysis, status updates, and actionable recommendations based on the live data.
 -   **Control Bar**: A set of controls to start or stop the data simulation, export data, and open the settings panel.
 
@@ -46,8 +48,8 @@ This centralized approach ensures data consistency across all components.
 AquaView integrates a Genkit-based AI to provide intelligent analysis.
 
 -   **Real-time Analysis (`analyzeWaterQuality`)**:
-    -   This flow is triggered automatically whenever new data is generated.
-    -   It sends the current sensor data and user-defined alert thresholds to the AI.
+    -   This flow is triggered automatically on first load, and subsequently when the user manually requests a refresh.
+    -   It sends the current sensor data (including Temperature, pH, Turbidity, DO, Lead, and Copper) and user-defined alert thresholds to the AI.
     -   The AI returns a structured analysis, including:
         -   `overallStatus`: 'Good', 'Warning', or 'Critical'.
         -   `summary`: A one-sentence overview.
@@ -64,7 +66,7 @@ AquaView integrates a Genkit-based AI to provide intelligent analysis.
 Users can customize the application's behavior via the Settings panel.
 
 -   **Units**: Change the temperature display between Celsius and Fahrenheit.
--   **Alert Thresholds**: Define the optimal ranges for each water quality parameter. When a parameter goes outside its defined range, a toast notification is triggered.
+-   **Alert Thresholds**: Define the optimal ranges for each water quality parameter (Temperature, pH, Turbidity, DO, Lead, Copper). When a parameter goes outside its defined range, a toast notification is triggered.
 -   **Refresh Interval**: Adjust the frequency at which new data is generated.
 -   **Persistence**: All settings are automatically saved to the browser's `localStorage` and are reloaded on subsequent visits.
 
@@ -79,6 +81,7 @@ The system operates based on the following sequence of events:
     d. It generates an initial `dataHistory` of 30 points to populate the chart.
     e. The `isInitialized` state is set to `true`.
     f. UI components, previously showing skeletons, render with the initial data.
+    g. The `AnalystCard` triggers an initial `analyzeWaterQuality` AI flow.
 
 2.  **Monitoring Loop (when `isRunning` is `true`)**:
     a. A `setInterval` timer is active, firing at the `refreshInterval` defined in `settings`.
@@ -87,7 +90,6 @@ The system operates based on the following sequence of events:
         ii. The `checkAlerts` function compares the new data point against the `settings.alerts` thresholds. If a threshold is breached, a `destructive` toast notification is displayed.
         iii. The new data point is appended to `dataHistory`, and the oldest point is removed to maintain a length of 30.
         iv. The UI automatically re-renders to reflect the new `currentData` and updated `dataHistory`.
-        v. The `AnalystCard` triggers the `analyzeWaterQuality` AI flow with the new data. The card updates its display with the returned analysis.
 
 3.  **User Interaction**:
     a. **Start/Stop Button**: Toggles the `isRunning` state, which starts or stops the monitoring loop.
@@ -99,5 +101,8 @@ The system operates based on the following sequence of events:
             ii. Calls the `generateReport` AI flow.
             iii. Once the report is received, it's displayed in the dialog.
             iv. The user can then download the report as a `.txt` file.
+    d. **Refresh Analysis Button (on Analyst Card)**:
+        i. Manually triggers the `analyzeWaterQuality` AI flow with the most recent data.
+        ii. The card updates its display with the returned analysis.
 
 This comprehensive workflow ensures a responsive, interactive, and insightful experience for monitoring water quality data.
