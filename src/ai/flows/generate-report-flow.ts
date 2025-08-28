@@ -36,14 +36,16 @@ const prompt = ai.definePrompt({
 - End: {{dataHistory.9.time}}
 
 **Alert Thresholds (Optimal Ranges):**
-- Temperature: {{{settings.alerts.temp.min}}}-{{{settings.alerts.alerts.temp.max}}}°C
+- Temperature: {{{settings.alerts.temp.min}}}-{{{settings.alerts.temp.max}}}°C
 - pH: {{{settings.alerts.ph.min}}}-{{{settings.alerts.ph.max}}}
 - Turbidity: < {{{settings.alerts.turbidity.max}}} NTU
 - Dissolved Oxygen: > {{{settings.alerts.do.min}}} mg/L
+- Lead: < {{{settings.alerts.lead.max}}} mg/L
+- Copper: < {{{settings.alerts.copper.max}}} mg/L
 
 **Data Summary (Last 10 points):**
 {{#each dataHistory}}
-- [{{time}}] Temp: {{temp}}°C, pH: {{ph}}, Turbidity: {{turbidity}} NTU, DO: {{do}} mg/L
+- [{{time}}] Temp: {{temp}}°C, pH: {{ph}}, Turbidity: {{turbidity}} NTU, DO: {{do}} mg/L, Lead: {{lead}} mg/L, Copper: {{copper}} mg/L
 {{/each}}
 
 **Instructions for Report Generation:**
@@ -59,7 +61,7 @@ Generate a report with the following sections, formatted using markdown syntax:
     *   Mention if any parameters consistently breached thresholds.
 
 3.  **## 2. Detailed Parameter Analysis**
-    *   For each parameter (Temperature, pH, Turbidity, Dissolved Oxygen):
+    *   For each parameter (Temperature, pH, Turbidity, Dissolved Oxygen, Lead, Copper):
         *   Provide a subheading (e.g., '### Temperature').
         *   Describe its trend over the period (e.g., stable, increasing, fluctuating).
         *   Note any violations of the defined thresholds.

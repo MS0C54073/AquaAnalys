@@ -32,12 +32,16 @@ Analyze the current sensor data based on the provided alert threshold settings.
 - pH: {{{currentData.ph}}}
 - Turbidity: {{{currentData.turbidity}}} NTU
 - Dissolved Oxygen (DO): {{{currentData.do}}} mg/L
+- Lead: {{{currentData.lead}}} mg/L
+- Copper: {{{currentData.copper}}} mg/L
 
 **Alert Thresholds (Optimal Ranges):**
 - Temperature: {{{settings.alerts.temp.min}}}-{{{settings.alerts.temp.max}}}°C
 - pH: {{{settings.alerts.ph.min}}}-{{{settings.alerts.ph.max}}}
 - Turbidity: < {{{settings.alerts.turbidity.max}}} NTU
 - Dissolved Oxygen: > {{{settings.alerts.do.min}}} mg/L
+- Lead: < {{{settings.alerts.lead.max}}} mg/L
+- Copper: < {{{settings.alerts.copper.max}}} mg/L
 
 **Your Response MUST include:**
 
@@ -51,12 +55,12 @@ Analyze the current sensor data based on the provided alert threshold settings.
     *   **Actionable Recommendations:** Based on the observations, provide clear, simple, and actionable steps the user should take. If all is well, your recommendation should be to continue current monitoring practices.
 
 **Example for a 'Good' state:**
-- **Observation:** "All parameters (Temperature, pH, Turbidity, DO) are within their optimal ranges."
+- **Observation:** "All parameters (Temperature, pH, Turbidity, DO, Lead, Copper) are within their optimal ranges."
 - **Recommendation:** "No immediate action is needed. Continue with standard monitoring."
 
 **Example for a 'Critical' state:**
-- **Observation:** "Dissolved Oxygen is critically low at 2.5 mg/L."
-- **Recommendation:** "Immediately increase aeration in the tank and check for equipment malfunctions."
+- **Observation:** "Lead concentration is critically high at 0.05 mg/L."
+- **Recommendation:** "Immediately identify and remove the source of lead contamination. Consider a partial water change."
 
 Keep your language professional but easy to understand for a general user.`,
 });

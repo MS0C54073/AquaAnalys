@@ -29,7 +29,7 @@ export default function SettingsSheet({ isOpen, onOpenChange }: SettingsSheetPro
   };
   
   const handleAlertChange = (
-    param: 'temp' | 'ph' | 'turbidity' | 'do',
+    param: 'temp' | 'ph' | 'turbidity' | 'do' | 'lead' | 'copper',
     field: 'min' | 'max',
     value: string
   ) => {
@@ -126,6 +126,14 @@ export default function SettingsSheet({ isOpen, onOpenChange }: SettingsSheetPro
                         <div className="space-y-2">
                             <Label>Dissolved Oxygen (mg/L)</Label>
                             <Input type="number" placeholder="Min" value={settings.alerts.do.min} onChange={e => handleAlertChange('do', 'min', e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Lead Concentration (mg/L)</Label>
+                            <Input type="number" placeholder="Max" value={settings.alerts.lead.max} onChange={e => handleAlertChange('lead', 'max', e.target.value)} step="0.001" />
+                        </div>
+                         <div className="space-y-2">
+                            <Label>Copper Concentration (mg/L)</Label>
+                            <Input type="number" placeholder="Max" value={settings.alerts.copper.max} onChange={e => handleAlertChange('copper', 'max', e.target.value)} step="0.1" />
                         </div>
                     </div>
                 </div>

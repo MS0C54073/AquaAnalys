@@ -13,6 +13,8 @@ const initialSettings: Settings = {
     ph: { min: 6.5, max: 8.5 },
     turbidity: { max: 50 },
     do: { min: 4 },
+    lead: { max: 0.015 },
+    copper: { max: 1.3 },
   },
   refreshInterval: 3000,
 };
@@ -24,6 +26,8 @@ function generateNewDataPoint(lastData: DataPoint): DataPoint {
     ph: parseFloat((lastData.ph + (Math.random() - 0.5) * 0.1).toFixed(1)),
     turbidity: Math.max(0, parseFloat((lastData.turbidity + (Math.random() - 0.5) * 5).toFixed(0))),
     do: Math.max(0, parseFloat((lastData.do + (Math.random() - 0.5) * 0.2).toFixed(1))),
+    lead: Math.max(0, parseFloat((lastData.lead + (Math.random() - 0.5) * 0.002).toFixed(4))),
+    copper: Math.max(0, parseFloat((lastData.copper + (Math.random() - 0.5) * 0.05).toFixed(3))),
   };
 
   // Clamp values to realistic ranges
@@ -31,12 +35,15 @@ function generateNewDataPoint(lastData: DataPoint): DataPoint {
   newPoint.ph = Math.max(4, Math.min(10, newPoint.ph));
   newPoint.turbidity = Math.max(0, Math.min(200, newPoint.turbidity));
   newPoint.do = Math.max(0, Math.min(15, newPoint.do));
+  newPoint.lead = Math.max(0, Math.min(0.1, newPoint.lead));
+  newPoint.copper = Math.max(0, Math.min(2.5, newPoint.copper));
+
 
   return newPoint;
 }
 
 const getInitialData = (): DataPoint[] => {
-    const initialPoint: DataPoint = { time: Date.now(), temp: 25.3, ph: 7.2, turbidity: 12, do: 8.1 };
+    const initialPoint: DataPoint = { time: Date.now(), temp: 25.3, ph: 7.2, turbidity: 12, do: 8.1, lead: 0.003, copper: 0.2 };
     const history = [initialPoint];
     for (let i = 0; i < MAX_HISTORY_LENGTH -1; i++) {
         history.unshift(generateNewDataPoint(history[0]));
@@ -70,13 +77,19 @@ export function useWaterQualityData() {
       toast({ variant: 'destructive', title: 'pH Alert', description: `pH level is ${dataPoint.ph}, outside the normal range.` });
     }
     if (dataPoint.turbidity > settings.alerts.turbidity.max) {
-      toast({ variant: 'destructive', title: 'Turbidity Alert', description: `Turbidity is ${dataPoint.turbidity} NTU, which is too high.` });
+      toast({ variant: 'destructive', title: 'Turbidity Alert', description: `Turbidity is ${data.turbidity} NTU, which is too high.` });
     }
      if (dataPoint.temp < settings.alerts.temp.min || dataPoint.temp > settings.alerts.temp.max) {
       toast({ variant: 'destructive', title: 'Temperature Alert', description: `Temperature is ${dataPoint.temp}°C, outside the safe range.` });
     }
      if (dataPoint.do < settings.alerts.do.min) {
       toast({ variant: 'destructive', title: 'Oxygen Alert', description: `Dissolved Oxygen is ${dataPoint.do} mg/L, which is too low.` });
+    }
+    if (dataPoint.lead > settings.alerts.lead.max) {
+        toast({ variant: 'destructive', title: 'Lead Alert', description: `Lead concentration is ${dataPoint.lead} mg/L, exceeding the safe limit.` });
+    }
+    if (dataPoint.copper > settings.alerts.copper.max) {
+        toast({ variant: 'destructive', title: 'Copper Alert', description: `Copper concentration is ${dataPoint.copper} mg/L, exceeding the safe limit.` });
     }
   }, [settings.alerts, toast]);
 

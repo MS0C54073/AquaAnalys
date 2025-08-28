@@ -7,6 +7,8 @@ import TemperatureCard from '@/components/dashboard/temperature-card';
 import PhCard from '@/components/dashboard/ph-card';
 import TurbidityCard from '@/components/dashboard/turbidity-card';
 import DissolvedOxygenCard from '@/components/dashboard/dissolved-oxygen-card';
+import LeadCard from '@/components/dashboard/lead-card';
+import CopperCard from '@/components/dashboard/copper-card';
 import LiveChart from '@/components/dashboard/live-chart';
 import Controls from '@/components/dashboard/controls';
 import SettingsSheet from '@/components/dashboard/settings-sheet';
@@ -23,14 +25,18 @@ function Dashboard() {
       
       <main className="flex-grow my-6">
         {isInitialized ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <TemperatureCard />
-            <PhCard />
-            <TurbidityCard />
-            <DissolvedOxygenCard />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+            <div className="lg:col-span-1 xl:col-span-2"><TemperatureCard /></div>
+            <div className="lg:col-span-1 xl:col-span-2"><PhCard /></div>
+            <div className="lg:col-span-1 xl:col-span-2"><TurbidityCard /></div>
+            <div className="lg:col-span-1 xl:col-span-2"><DissolvedOxygenCard /></div>
+            <div className="lg:col-span-1 xl:col-span-2"><LeadCard /></div>
+            <div className="lg:col-span-1 xl-col-span-2"><CopperCard /></div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+            <Skeleton className="h-[220px] rounded-lg" />
+            <Skeleton className="h-[220px] rounded-lg" />
             <Skeleton className="h-[220px] rounded-lg" />
             <Skeleton className="h-[220px] rounded-lg" />
             <Skeleton className="h-[220px] rounded-lg" />

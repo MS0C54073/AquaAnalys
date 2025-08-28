@@ -6,6 +6,8 @@ export type DataPoint = {
   ph: number;
   turbidity: number;
   do: number;
+  lead: number;
+  copper: number;
 };
 
 export type Settings = {
@@ -17,6 +19,8 @@ export type Settings = {
     ph: { min: number; max: number };
     turbidity: { max: number };
     do: { min: number };
+    lead: { max: number };
+    copper: { max: number };
   };
   refreshInterval: number;
 };
@@ -29,6 +33,8 @@ export const DataPointSchema = z.object({
   ph: z.number(),
   turbidity: z.number(),
   do: z.number(),
+  lead: z.number(),
+  copper: z.number(),
 });
 
 export const SettingsSchema = z.object({
@@ -38,6 +44,8 @@ export const SettingsSchema = z.object({
     ph: z.object({ min: z.number(), max: z.number() }),
     turbidity: z.object({ max: z.number() }),
     do: z.object({ min: z.number() }),
+    lead: z.object({ max: z.number() }),
+    copper: z.object({ max: z.number() }),
   }),
   refreshInterval: z.number(),
 });
